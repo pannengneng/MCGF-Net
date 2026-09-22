@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Model weights
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Dataset
+datasets/
+
+# Training results
+runs/
+
+# IDE
+.vscode/
+.idea/
+
+# Windows
+Thumbs.db
+.DS_Store

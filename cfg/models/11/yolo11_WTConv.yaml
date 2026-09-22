@@ -1,0 +1,54 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+# YOLO11 object detection model with P3-P5 outputs. For Usage examples see https://docs.ultralytics.com/tasks/detect
+
+# Parameters
+nc: 80 # number of classes
+scales: # model compound scaling constants, i.e. 'model=yolo11n.yaml' will call yolo11.yaml with scale 'n'
+  # [depth, width, max_channels]
+  n: [0.50, 0.25, 1024] # summary: 319 layers, 2624080 parameters, 2624064 gradients, 6.6 GFLOPs
+  s: [0.50, 0.50, 1024] # summary: 319 layers, 9458752 parameters, 9458736 gradients, 21.7 GFLOPs
+  m: [0.50, 1.00, 512] # summary: 409 layers, 20114688 parameters, 20114672 gradients, 68.5 GFLOPs
+  l: [1.00, 1.00, 512] # summary: 631 layers, 25372160 parameters, 25372144 gradients, 87.6 GFLOPs
+  x: [1.00, 1.50, 512] # summary: 631 layers, 56966176 parameters, 56966160 gradients, 196.0 GFLOPs
+
+# YOLO11n backbone
+backbone:       # 构建网络结构
+  # [from, repeats, module, args]
+  - [-1, 1, Conv, [64, 3, 2]] # 0-P1/2
+  - [-1, 1, Conv, [128, 3, 2]] # 1-P2/4
+  - [-1, 2, C3k2_WT, [256, False, 0.25]]
+  - [-1, 1, Conv, [256, 3, 2]] # 3-P3/8
+  - [-1, 2, C3k2_WT, [512, False, 0.25]]
+  - [-1, 1, Conv, [512, 3, 2]] # 5-P4/16
+  - [-1, 2, C3k2_WT, [512, True]]
+  - [-1, 1, Conv, [1024, 3, 2]] # 7-P5/32
+  - [-1, 2, C3k2_WT, [1024, True]]
+  - [-1, 1, SPPF, [1024, 5]] # 9
+#  - [-1, 2, C2PSA, [1024]] # 10
+  - [-1, 2, C2PSA_MFM_Attention, [1024]] # 10
+
+# YOLO11n head
+head:
+  # CAD-HR-BiFPN Neck: align P3/P4/P5 channels and inject the CAD-MFM_C2PSA P5 output.
+  - [10, 1, Conv, [256, 1, 1]] # 11 P5_align, stride=32
+  - [6, 1, Conv, [256, 1, 1]] # 12 P4_align, stride=16
+  - [4, 1, Conv, [256, 1, 1]] # 13 P3_align, stride=8
+  - [-1, 1, GeometryAwareDetailFusion, [256]] # 14 geometry-aware detail fusion for P3
+
+  # Top-down path
+  - [11, 1, nn.Upsample, [None, 2, "nearest"]] # 15 P5 -> P4
+  - [[-1, 12], 1, CADBiFPNAdd, []] # 16 weighted P4 fusion
+  - [-1, 2, CADNeckBlock, [256, False]] # 17 P4_td
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]] # 18 P4_td -> P3
+  - [[-1, 14], 1, CADBiFPNAdd, []] # 19 weighted P3 fusion
+  - [-1, 2, CADNeckBlock, [256, False]] # 20 P3_out, stride=8
+
+  # Bottom-up path
+  - [-1, 1, DSConvDown, [256]] # 21 P3_out -> P4
+  - [[-1, 17], 1, CADBiFPNAdd, []] # 22 weighted P4 fusion
+  - [-1, 2, CADNeckBlock, [256, False]] # 23 P4_out, stride=16
+  - [-1, 1, DSConvDown, [256]] # 24 P4_out -> P5
+  - [[-1, 11], 1, CADBiFPNAdd, []] # 25 weighted P5 fusion
+  - [-1, 2, CADNeckBlock, [256, False]] # 26 P5_out, stride=32
+
+  - [[20, 23, 26], 1, Detect, [nc]] # Detect(P3, P4, P5)
