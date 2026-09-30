@@ -18,12 +18,10 @@ The main requirements include:
 - CUDA (recommended for GPU training)
 
 Install the required packages:
+`pip install -r requirements.txt`
 
 
-pip install -r requirements.txt
-
-
-1. Dataset
+## 1. Dataset
 The experiments are conducted on the FloorPlanCAD dataset.
 Please organize the dataset in YOLO format and place it under datasets.
 The recommended directory structure is:
@@ -41,30 +39,33 @@ datasets/
 Configure the dataset path and category information in the corresponding YAML file before training.
 
 
-2. Train
+## 2. Train
 To train MCGF-Net, run:
-python train.py
-
+`python train.py`
 The training parameters, dataset path, model configuration, batch size, image size, and number of epochs can be configured in train.py or the corresponding configuration files.
 
 
-3. Test
+## 3. Test
 After training, evaluate the trained model using the generated model weights.
 For example:
-python main.py
-
+`python main.py`
 Please modify the model weight path and dataset configuration according to your local environment.
 
 
-Reference
+## 4. Visualization
+The visualization results demonstrate that MCGF-Net can detect more small-scale and easily confused components while producing more accurate bounding boxes in complex CAD drawings.
+Visualization examples will be provided here.
+
+## Reference
 If you find this project useful for your research, please cite our work:
+```bash
 @inproceedings{MCGFNet2026,
   title={MCGF-Net: Multi-Dimensional Collaborative Geometric Feature Enhancement Network for Object Detection in CAD Drawings},
   author={Pan, Yuting and Jiang, Zhongmin and Ouyang, Xiong and Guo, Ziyang and Wang, Wenju},
   year={2026}
 }
+```
 
-
-Acknowledgement
+## Acknowledgement
 This project is developed based on the Ultralytics YOLO framework.
 We sincerely thank the authors and contributors of the related open-source projects for their excellent work.
