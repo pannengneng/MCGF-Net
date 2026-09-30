@@ -1,0 +1,29 @@
+# 基础计算与图像处理
+numpy>=1.23.0
+matplotlib>=3.3.0
+opencv-python>=4.6.0
+pillow>=7.1.2
+pyyaml>=5.3.1
+requests>=2.23.0
+scipy>=1.4.1
+
+# PyTorch
+torch>=1.8.0,!=2.4.0; sys_platform == "win32"
+torch>=1.8.0; sys_platform != "win32"
+torchvision>=0.9.0
+
+# 数据处理与可视化
+pandas>=1.1.4
+seaborn>=0.11.0
+tqdm>=4.64.0
+
+# 系统信息与模型复杂度统计
+psutil
+py-cpuinfo
+ultralytics-thop>=2.0.0
+
+# MCGF-Net 自定义小波卷积必需
+PyWavelets
+
+# 项目中的 PySide6 检测界面
+PySide6
