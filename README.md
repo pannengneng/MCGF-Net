@@ -18,13 +18,16 @@ The main requirements include:
 - CUDA (recommended for GPU training)
 
 Install the required packages:
-`pip install -r requirements.txt`
+```bash
+pip install -r requirements.txt
+```
 
 
 ## 1. Dataset
 The experiments are conducted on the FloorPlanCAD dataset.
 Please organize the dataset in YOLO format and place it under datasets.
 The recommended directory structure is:
+```bash
 datasets/
 └── FloorPlanCAD/
     ├── images/
@@ -35,20 +38,24 @@ datasets/
         ├── train/
         ├── val/
         └── test/
-
+```
 Configure the dataset path and category information in the corresponding YAML file before training.
 
 
 ## 2. Train
 To train MCGF-Net, run:
-`python train.py`
+```bash
+python train.py
+```
 The training parameters, dataset path, model configuration, batch size, image size, and number of epochs can be configured in train.py or the corresponding configuration files.
 
 
 ## 3. Test
 After training, evaluate the trained model using the generated model weights.
 For example:
-`python main.py`
+```bash
+python main.py
+```
 Please modify the model weight path and dataset configuration according to your local environment.
 
 
